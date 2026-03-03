@@ -22,6 +22,12 @@ export enum RegistryType {
   REGISTRY_TYPE_HUGGINGFACE = "REGISTRY_TYPE_HUGGINGFACE",
 }
 
+export enum RegistryStatus {
+  REGISTRY_STATUS_UNSPECIFIED = "REGISTRY_STATUS_UNSPECIFIED",
+  REGISTRY_STATUS_HEALTHY = "REGISTRY_STATUS_HEALTHY",
+  REGISTRY_STATUS_UNHEALTHY = "REGISTRY_STATUS_UNHEALTHY",
+}
+
 
 type BaseRegistry = {
   id?: number
@@ -30,7 +36,7 @@ type BaseRegistry = {
   type?: RegistryType
   url?: string
   insecure?: boolean
-  status?: number
+  status?: RegistryStatus
   createdAt?: GoogleProtobufTimestamp.Timestamp
   updatedAt?: GoogleProtobufTimestamp.Timestamp
 }
@@ -125,7 +131,7 @@ export class Registries {
     return fm.fetchReq<CreateRegistryRequest, CreateRegistryResponse>(`/api/v1alpha1/registries`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)})
   }
   static UpdateRegistry(req: UpdateRegistryRequest, initReq?: fm.InitReq): Promise<UpdateRegistryResponse> {
-    return fm.fetchReq<UpdateRegistryRequest, UpdateRegistryResponse>(`/api/v1alpha1/registries/${req["id"]}`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)})
+    return fm.fetchReq<UpdateRegistryRequest, UpdateRegistryResponse>(`/api/v1alpha1/registries/${req["id"]}`, {...initReq, method: "PUT", body: JSON.stringify(req, fm.replacer)})
   }
   static DeleteRegistry(req: DeleteRegistryRequest, initReq?: fm.InitReq): Promise<DeleteRegistryResponse> {
     return fm.fetchReq<DeleteRegistryRequest, DeleteRegistryResponse>(`/api/v1alpha1/registries/${req["id"]}`, {...initReq, method: "DELETE"})

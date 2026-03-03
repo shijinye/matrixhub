@@ -69,6 +69,55 @@ func (RegistryType) EnumDescriptor() ([]byte, []int) {
 	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{0}
 }
 
+type RegistryStatus int32
+
+const (
+	RegistryStatus_REGISTRY_STATUS_UNSPECIFIED RegistryStatus = 0
+	RegistryStatus_REGISTRY_STATUS_HEALTHY     RegistryStatus = 1
+	RegistryStatus_REGISTRY_STATUS_UNHEALTHY   RegistryStatus = 2
+)
+
+// Enum value maps for RegistryStatus.
+var (
+	RegistryStatus_name = map[int32]string{
+		0: "REGISTRY_STATUS_UNSPECIFIED",
+		1: "REGISTRY_STATUS_HEALTHY",
+		2: "REGISTRY_STATUS_UNHEALTHY",
+	}
+	RegistryStatus_value = map[string]int32{
+		"REGISTRY_STATUS_UNSPECIFIED": 0,
+		"REGISTRY_STATUS_HEALTHY":     1,
+		"REGISTRY_STATUS_UNHEALTHY":   2,
+	}
+)
+
+func (x RegistryStatus) Enum() *RegistryStatus {
+	p := new(RegistryStatus)
+	*p = x
+	return p
+}
+
+func (x RegistryStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RegistryStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_v1alpha1_registry_proto_enumTypes[1].Descriptor()
+}
+
+func (RegistryStatus) Type() protoreflect.EnumType {
+	return &file_v1alpha1_registry_proto_enumTypes[1]
+}
+
+func (x RegistryStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RegistryStatus.Descriptor instead.
+func (RegistryStatus) EnumDescriptor() ([]byte, []int) {
+	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{1}
+}
+
 type Registry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique identifier for the registry
@@ -90,8 +139,8 @@ type Registry struct {
 	Credential isRegistry_Credential `protobuf_oneof:"credential"`
 	// Whether to allow insecure connections (e.g., skip TLS verification)
 	Insecure bool `protobuf:"varint,6,opt,name=insecure,proto3" json:"insecure,omitempty"`
-	// Status of the registry (e.g., 1=active, 0=disabled, custom meanings allowed)
-	Status uint32 `protobuf:"varint,7,opt,name=status,proto3" json:"status,omitempty"`
+	// Status of the registry
+	Status RegistryStatus `protobuf:"varint,7,opt,name=status,proto3,enum=matrixhub.v1alpha1.RegistryStatus" json:"status,omitempty"`
 	// Creation time
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	// Last update time
@@ -188,11 +237,11 @@ func (x *Registry) GetInsecure() bool {
 	return false
 }
 
-func (x *Registry) GetStatus() uint32 {
+func (x *Registry) GetStatus() RegistryStatus {
 	if x != nil {
 		return x.Status
 	}
-	return 0
+	return RegistryStatus_REGISTRY_STATUS_UNSPECIFIED
 }
 
 func (x *Registry) GetCreatedAt() *timestamppb.Timestamp {
@@ -1022,7 +1071,7 @@ var File_v1alpha1_registry_proto protoreflect.FileDescriptor
 
 const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\n" +
-	"\x17v1alpha1/registry.proto\x12\x12matrixhub.v1alpha1\x1a\x14v1alpha1/utils.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x95\x03\n" +
+	"\x17v1alpha1/registry.proto\x12\x12matrixhub.v1alpha1\x1a\x14v1alpha1/utils.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb9\x03\n" +
 	"\bRegistry\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -1030,8 +1079,8 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\x04type\x18\x04 \x01(\x0e2 .matrixhub.v1alpha1.RegistryTypeR\x04type\x12\x10\n" +
 	"\x03url\x18\x05 \x01(\tR\x03url\x12C\n" +
 	"\x05basic\x18\x14 \x01(\v2+.matrixhub.v1alpha1.RegistryBasicCredentialH\x00R\x05basic\x12\x1a\n" +
-	"\binsecure\x18\x06 \x01(\bR\binsecure\x12\x16\n" +
-	"\x06status\x18\a \x01(\rR\x06status\x129\n" +
+	"\binsecure\x18\x06 \x01(\bR\binsecure\x12:\n" +
+	"\x06status\x18\a \x01(\x0e2\".matrixhub.v1alpha1.RegistryStatusR\x06status\x129\n" +
 	"\n" +
 	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
@@ -1091,13 +1140,17 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\x14PingRegistryResponse*L\n" +
 	"\fRegistryType\x12\x1d\n" +
 	"\x19REGISTRY_TYPE_UNSPECIFIED\x10\x00\x12\x1d\n" +
-	"\x19REGISTRY_TYPE_HUGGINGFACE\x10\x012\xe2\x06\n" +
+	"\x19REGISTRY_TYPE_HUGGINGFACE\x10\x01*m\n" +
+	"\x0eRegistryStatus\x12\x1f\n" +
+	"\x1bREGISTRY_STATUS_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x17REGISTRY_STATUS_HEALTHY\x10\x01\x12\x1d\n" +
+	"\x19REGISTRY_STATUS_UNHEALTHY\x10\x022\xe2\x06\n" +
 	"\n" +
 	"Registries\x12\x89\x01\n" +
 	"\x0eListRegistries\x12).matrixhub.v1alpha1.ListRegistriesRequest\x1a*.matrixhub.v1alpha1.ListRegistriesResponse\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/api/v1alpha1/registries\x12\x85\x01\n" +
 	"\vGetRegistry\x12&.matrixhub.v1alpha1.GetRegistryRequest\x1a'.matrixhub.v1alpha1.GetRegistryResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/api/v1alpha1/registries/{id}\x12\x8c\x01\n" +
 	"\x0eCreateRegistry\x12).matrixhub.v1alpha1.CreateRegistryRequest\x1a*.matrixhub.v1alpha1.CreateRegistryResponse\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/v1alpha1/registries\x12\x91\x01\n" +
-	"\x0eUpdateRegistry\x12).matrixhub.v1alpha1.UpdateRegistryRequest\x1a*.matrixhub.v1alpha1.UpdateRegistryResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/api/v1alpha1/registries/{id}\x12\x8e\x01\n" +
+	"\x0eUpdateRegistry\x12).matrixhub.v1alpha1.UpdateRegistryRequest\x1a*.matrixhub.v1alpha1.UpdateRegistryResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\x1a\x1d/api/v1alpha1/registries/{id}\x12\x8e\x01\n" +
 	"\x0eDeleteRegistry\x12).matrixhub.v1alpha1.DeleteRegistryRequest\x1a*.matrixhub.v1alpha1.DeleteRegistryResponse\"%\x82\xd3\xe4\x93\x02\x1f*\x1d/api/v1alpha1/registries/{id}\x12\x8b\x01\n" +
 	"\fPingRegistry\x12'.matrixhub.v1alpha1.PingRegistryRequest\x1a(.matrixhub.v1alpha1.PingRegistryResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/api/v1alpha1/registries/pingB<Z:github.com/matrixhub-ai/matrixhub/api/go/v1alpha1;v1alpha1b\x06proto3"
 
@@ -1113,59 +1166,61 @@ func file_v1alpha1_registry_proto_rawDescGZIP() []byte {
 	return file_v1alpha1_registry_proto_rawDescData
 }
 
-var file_v1alpha1_registry_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_v1alpha1_registry_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_v1alpha1_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_v1alpha1_registry_proto_goTypes = []any{
 	(RegistryType)(0),               // 0: matrixhub.v1alpha1.RegistryType
-	(*Registry)(nil),                // 1: matrixhub.v1alpha1.Registry
-	(*RegistryBasicCredential)(nil), // 2: matrixhub.v1alpha1.RegistryBasicCredential
-	(*ListRegistriesRequest)(nil),   // 3: matrixhub.v1alpha1.ListRegistriesRequest
-	(*ListRegistriesResponse)(nil),  // 4: matrixhub.v1alpha1.ListRegistriesResponse
-	(*GetRegistryRequest)(nil),      // 5: matrixhub.v1alpha1.GetRegistryRequest
-	(*GetRegistryResponse)(nil),     // 6: matrixhub.v1alpha1.GetRegistryResponse
-	(*CreateRegistryRequest)(nil),   // 7: matrixhub.v1alpha1.CreateRegistryRequest
-	(*CreateRegistryResponse)(nil),  // 8: matrixhub.v1alpha1.CreateRegistryResponse
-	(*UpdateRegistryRequest)(nil),   // 9: matrixhub.v1alpha1.UpdateRegistryRequest
-	(*UpdateRegistryResponse)(nil),  // 10: matrixhub.v1alpha1.UpdateRegistryResponse
-	(*DeleteRegistryRequest)(nil),   // 11: matrixhub.v1alpha1.DeleteRegistryRequest
-	(*DeleteRegistryResponse)(nil),  // 12: matrixhub.v1alpha1.DeleteRegistryResponse
-	(*PingRegistryRequest)(nil),     // 13: matrixhub.v1alpha1.PingRegistryRequest
-	(*PingRegistryResponse)(nil),    // 14: matrixhub.v1alpha1.PingRegistryResponse
-	(*timestamppb.Timestamp)(nil),   // 15: google.protobuf.Timestamp
-	(*Pagination)(nil),              // 16: matrixhub.v1alpha1.Pagination
+	(RegistryStatus)(0),             // 1: matrixhub.v1alpha1.RegistryStatus
+	(*Registry)(nil),                // 2: matrixhub.v1alpha1.Registry
+	(*RegistryBasicCredential)(nil), // 3: matrixhub.v1alpha1.RegistryBasicCredential
+	(*ListRegistriesRequest)(nil),   // 4: matrixhub.v1alpha1.ListRegistriesRequest
+	(*ListRegistriesResponse)(nil),  // 5: matrixhub.v1alpha1.ListRegistriesResponse
+	(*GetRegistryRequest)(nil),      // 6: matrixhub.v1alpha1.GetRegistryRequest
+	(*GetRegistryResponse)(nil),     // 7: matrixhub.v1alpha1.GetRegistryResponse
+	(*CreateRegistryRequest)(nil),   // 8: matrixhub.v1alpha1.CreateRegistryRequest
+	(*CreateRegistryResponse)(nil),  // 9: matrixhub.v1alpha1.CreateRegistryResponse
+	(*UpdateRegistryRequest)(nil),   // 10: matrixhub.v1alpha1.UpdateRegistryRequest
+	(*UpdateRegistryResponse)(nil),  // 11: matrixhub.v1alpha1.UpdateRegistryResponse
+	(*DeleteRegistryRequest)(nil),   // 12: matrixhub.v1alpha1.DeleteRegistryRequest
+	(*DeleteRegistryResponse)(nil),  // 13: matrixhub.v1alpha1.DeleteRegistryResponse
+	(*PingRegistryRequest)(nil),     // 14: matrixhub.v1alpha1.PingRegistryRequest
+	(*PingRegistryResponse)(nil),    // 15: matrixhub.v1alpha1.PingRegistryResponse
+	(*timestamppb.Timestamp)(nil),   // 16: google.protobuf.Timestamp
+	(*Pagination)(nil),              // 17: matrixhub.v1alpha1.Pagination
 }
 var file_v1alpha1_registry_proto_depIdxs = []int32{
 	0,  // 0: matrixhub.v1alpha1.Registry.type:type_name -> matrixhub.v1alpha1.RegistryType
-	2,  // 1: matrixhub.v1alpha1.Registry.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
-	15, // 2: matrixhub.v1alpha1.Registry.created_at:type_name -> google.protobuf.Timestamp
-	15, // 3: matrixhub.v1alpha1.Registry.updated_at:type_name -> google.protobuf.Timestamp
-	1,  // 4: matrixhub.v1alpha1.ListRegistriesResponse.registries:type_name -> matrixhub.v1alpha1.Registry
-	16, // 5: matrixhub.v1alpha1.ListRegistriesResponse.pagination:type_name -> matrixhub.v1alpha1.Pagination
-	1,  // 6: matrixhub.v1alpha1.GetRegistryResponse.registry:type_name -> matrixhub.v1alpha1.Registry
-	0,  // 7: matrixhub.v1alpha1.CreateRegistryRequest.type:type_name -> matrixhub.v1alpha1.RegistryType
-	2,  // 8: matrixhub.v1alpha1.CreateRegistryRequest.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
-	1,  // 9: matrixhub.v1alpha1.CreateRegistryResponse.registry:type_name -> matrixhub.v1alpha1.Registry
-	2,  // 10: matrixhub.v1alpha1.UpdateRegistryRequest.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
-	1,  // 11: matrixhub.v1alpha1.UpdateRegistryResponse.registry:type_name -> matrixhub.v1alpha1.Registry
-	0,  // 12: matrixhub.v1alpha1.PingRegistryRequest.type:type_name -> matrixhub.v1alpha1.RegistryType
-	2,  // 13: matrixhub.v1alpha1.PingRegistryRequest.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
-	3,  // 14: matrixhub.v1alpha1.Registries.ListRegistries:input_type -> matrixhub.v1alpha1.ListRegistriesRequest
-	5,  // 15: matrixhub.v1alpha1.Registries.GetRegistry:input_type -> matrixhub.v1alpha1.GetRegistryRequest
-	7,  // 16: matrixhub.v1alpha1.Registries.CreateRegistry:input_type -> matrixhub.v1alpha1.CreateRegistryRequest
-	9,  // 17: matrixhub.v1alpha1.Registries.UpdateRegistry:input_type -> matrixhub.v1alpha1.UpdateRegistryRequest
-	11, // 18: matrixhub.v1alpha1.Registries.DeleteRegistry:input_type -> matrixhub.v1alpha1.DeleteRegistryRequest
-	13, // 19: matrixhub.v1alpha1.Registries.PingRegistry:input_type -> matrixhub.v1alpha1.PingRegistryRequest
-	4,  // 20: matrixhub.v1alpha1.Registries.ListRegistries:output_type -> matrixhub.v1alpha1.ListRegistriesResponse
-	6,  // 21: matrixhub.v1alpha1.Registries.GetRegistry:output_type -> matrixhub.v1alpha1.GetRegistryResponse
-	8,  // 22: matrixhub.v1alpha1.Registries.CreateRegistry:output_type -> matrixhub.v1alpha1.CreateRegistryResponse
-	10, // 23: matrixhub.v1alpha1.Registries.UpdateRegistry:output_type -> matrixhub.v1alpha1.UpdateRegistryResponse
-	12, // 24: matrixhub.v1alpha1.Registries.DeleteRegistry:output_type -> matrixhub.v1alpha1.DeleteRegistryResponse
-	14, // 25: matrixhub.v1alpha1.Registries.PingRegistry:output_type -> matrixhub.v1alpha1.PingRegistryResponse
-	20, // [20:26] is the sub-list for method output_type
-	14, // [14:20] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	3,  // 1: matrixhub.v1alpha1.Registry.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
+	1,  // 2: matrixhub.v1alpha1.Registry.status:type_name -> matrixhub.v1alpha1.RegistryStatus
+	16, // 3: matrixhub.v1alpha1.Registry.created_at:type_name -> google.protobuf.Timestamp
+	16, // 4: matrixhub.v1alpha1.Registry.updated_at:type_name -> google.protobuf.Timestamp
+	2,  // 5: matrixhub.v1alpha1.ListRegistriesResponse.registries:type_name -> matrixhub.v1alpha1.Registry
+	17, // 6: matrixhub.v1alpha1.ListRegistriesResponse.pagination:type_name -> matrixhub.v1alpha1.Pagination
+	2,  // 7: matrixhub.v1alpha1.GetRegistryResponse.registry:type_name -> matrixhub.v1alpha1.Registry
+	0,  // 8: matrixhub.v1alpha1.CreateRegistryRequest.type:type_name -> matrixhub.v1alpha1.RegistryType
+	3,  // 9: matrixhub.v1alpha1.CreateRegistryRequest.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
+	2,  // 10: matrixhub.v1alpha1.CreateRegistryResponse.registry:type_name -> matrixhub.v1alpha1.Registry
+	3,  // 11: matrixhub.v1alpha1.UpdateRegistryRequest.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
+	2,  // 12: matrixhub.v1alpha1.UpdateRegistryResponse.registry:type_name -> matrixhub.v1alpha1.Registry
+	0,  // 13: matrixhub.v1alpha1.PingRegistryRequest.type:type_name -> matrixhub.v1alpha1.RegistryType
+	3,  // 14: matrixhub.v1alpha1.PingRegistryRequest.basic:type_name -> matrixhub.v1alpha1.RegistryBasicCredential
+	4,  // 15: matrixhub.v1alpha1.Registries.ListRegistries:input_type -> matrixhub.v1alpha1.ListRegistriesRequest
+	6,  // 16: matrixhub.v1alpha1.Registries.GetRegistry:input_type -> matrixhub.v1alpha1.GetRegistryRequest
+	8,  // 17: matrixhub.v1alpha1.Registries.CreateRegistry:input_type -> matrixhub.v1alpha1.CreateRegistryRequest
+	10, // 18: matrixhub.v1alpha1.Registries.UpdateRegistry:input_type -> matrixhub.v1alpha1.UpdateRegistryRequest
+	12, // 19: matrixhub.v1alpha1.Registries.DeleteRegistry:input_type -> matrixhub.v1alpha1.DeleteRegistryRequest
+	14, // 20: matrixhub.v1alpha1.Registries.PingRegistry:input_type -> matrixhub.v1alpha1.PingRegistryRequest
+	5,  // 21: matrixhub.v1alpha1.Registries.ListRegistries:output_type -> matrixhub.v1alpha1.ListRegistriesResponse
+	7,  // 22: matrixhub.v1alpha1.Registries.GetRegistry:output_type -> matrixhub.v1alpha1.GetRegistryResponse
+	9,  // 23: matrixhub.v1alpha1.Registries.CreateRegistry:output_type -> matrixhub.v1alpha1.CreateRegistryResponse
+	11, // 24: matrixhub.v1alpha1.Registries.UpdateRegistry:output_type -> matrixhub.v1alpha1.UpdateRegistryResponse
+	13, // 25: matrixhub.v1alpha1.Registries.DeleteRegistry:output_type -> matrixhub.v1alpha1.DeleteRegistryResponse
+	15, // 26: matrixhub.v1alpha1.Registries.PingRegistry:output_type -> matrixhub.v1alpha1.PingRegistryResponse
+	21, // [21:27] is the sub-list for method output_type
+	15, // [15:21] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_v1alpha1_registry_proto_init() }
@@ -1191,7 +1246,7 @@ func file_v1alpha1_registry_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1alpha1_registry_proto_rawDesc), len(file_v1alpha1_registry_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,

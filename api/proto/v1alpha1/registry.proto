@@ -30,7 +30,7 @@ service Registries {
 
   rpc UpdateRegistry(UpdateRegistryRequest) returns (UpdateRegistryResponse) {
     option (google.api.http) = {
-      post: "/api/v1alpha1/registries/{id}"
+      put: "/api/v1alpha1/registries/{id}"
       body: "*"
     };
   }
@@ -75,8 +75,8 @@ message Registry {
   // Whether to allow insecure connections (e.g., skip TLS verification)
   bool insecure = 6;
 
-  // Status of the registry (e.g., 1=active, 0=disabled, custom meanings allowed)
-  uint32 status = 7;
+  // Status of the registry
+  RegistryStatus status = 7;
 
   // Creation time
   google.protobuf.Timestamp created_at = 8;
@@ -96,6 +96,12 @@ message RegistryBasicCredential {
 enum RegistryType {
   REGISTRY_TYPE_UNSPECIFIED = 0;
   REGISTRY_TYPE_HUGGINGFACE = 1;
+}
+
+enum RegistryStatus {
+  REGISTRY_STATUS_UNSPECIFIED = 0;
+  REGISTRY_STATUS_HEALTHY = 1;
+  REGISTRY_STATUS_UNHEALTHY = 2;
 }
 
 message ListRegistriesRequest {
