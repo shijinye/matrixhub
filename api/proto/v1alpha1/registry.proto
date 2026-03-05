@@ -51,7 +51,7 @@ service Registries {
 
 message Registry {
   // Unique identifier for the registry
-  uint32 id = 1;
+  int32 id = 1;
 
   // Name of the registry
   string name = 2;
@@ -107,11 +107,11 @@ enum RegistryStatus {
 message ListRegistriesRequest {
   // Current page number (starting from 1)
   // +optional
-  uint32 page = 1;
+  int32 page = 1;
 
   // Number of items per page, default is 10
   // +optional
-  uint32 page_size = 2;
+  int32 page_size = 2;
 
   // Search keyword, used for fuzzy matching on `name`, etc.
   // +optional
@@ -129,7 +129,7 @@ message ListRegistriesResponse {
 message GetRegistryRequest {
   // Unique identifier for the registry
   // +required
-  uint32 id = 1;
+  int32 id = 1;
 }
 
 message GetRegistryResponse {
@@ -170,7 +170,7 @@ message CreateRegistryResponse {
 
 message UpdateRegistryRequest {
   // Unique identifier for the registry
-  uint32 id = 1;
+  int32 id = 1;
 
   // Name of the registry
   string name = 2;
@@ -201,7 +201,7 @@ message UpdateRegistryResponse {
 
 message DeleteRegistryRequest {
   // Unique identifier for the registry to delete. Required.
-  uint32 id = 1;
+  int32 id = 1;
 }
 
 message DeleteRegistryResponse {}

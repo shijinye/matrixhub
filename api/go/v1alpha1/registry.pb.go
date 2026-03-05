@@ -121,7 +121,7 @@ func (RegistryStatus) EnumDescriptor() ([]byte, []int) {
 type Registry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique identifier for the registry
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Name of the registry
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// Description of the registry
@@ -179,7 +179,7 @@ func (*Registry) Descriptor() ([]byte, []int) {
 	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Registry) GetId() uint32 {
+func (x *Registry) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
@@ -327,10 +327,10 @@ type ListRegistriesRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Current page number (starting from 1)
 	// +optional
-	Page uint32 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Page int32 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
 	// Number of items per page, default is 10
 	// +optional
-	PageSize uint32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Search keyword, used for fuzzy matching on `name`, etc.
 	// +optional
 	Search        string `protobuf:"bytes,3,opt,name=search,proto3" json:"search,omitempty"`
@@ -368,14 +368,14 @@ func (*ListRegistriesRequest) Descriptor() ([]byte, []int) {
 	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *ListRegistriesRequest) GetPage() uint32 {
+func (x *ListRegistriesRequest) GetPage() int32 {
 	if x != nil {
 		return x.Page
 	}
 	return 0
 }
 
-func (x *ListRegistriesRequest) GetPageSize() uint32 {
+func (x *ListRegistriesRequest) GetPageSize() int32 {
 	if x != nil {
 		return x.PageSize
 	}
@@ -447,7 +447,7 @@ type GetRegistryRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique identifier for the registry
 	// +required
-	Id            uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -482,7 +482,7 @@ func (*GetRegistryRequest) Descriptor() ([]byte, []int) {
 	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GetRegistryRequest) GetId() uint32 {
+func (x *GetRegistryRequest) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
@@ -697,7 +697,7 @@ func (x *CreateRegistryResponse) GetRegistry() *Registry {
 type UpdateRegistryRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique identifier for the registry
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Name of the registry
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// Description of the registry
@@ -747,7 +747,7 @@ func (*UpdateRegistryRequest) Descriptor() ([]byte, []int) {
 	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *UpdateRegistryRequest) GetId() uint32 {
+func (x *UpdateRegistryRequest) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
@@ -857,7 +857,7 @@ func (x *UpdateRegistryResponse) GetRegistry() *Registry {
 type DeleteRegistryRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique identifier for the registry to delete. Required.
-	Id            uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -892,7 +892,7 @@ func (*DeleteRegistryRequest) Descriptor() ([]byte, []int) {
 	return file_v1alpha1_registry_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *DeleteRegistryRequest) GetId() uint32 {
+func (x *DeleteRegistryRequest) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
@@ -1073,7 +1073,7 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\n" +
 	"\x17v1alpha1/registry.proto\x12\x12matrixhub.v1alpha1\x1a\x14v1alpha1/utils.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb9\x03\n" +
 	"\bRegistry\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x124\n" +
 	"\x04type\x18\x04 \x01(\x0e2 .matrixhub.v1alpha1.RegistryTypeR\x04type\x12\x10\n" +
@@ -1091,8 +1091,8 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"`\n" +
 	"\x15ListRegistriesRequest\x12\x12\n" +
-	"\x04page\x18\x01 \x01(\rR\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\rR\bpageSize\x12\x16\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x16\n" +
 	"\x06search\x18\x03 \x01(\tR\x06search\"\x96\x01\n" +
 	"\x16ListRegistriesResponse\x12<\n" +
 	"\n" +
@@ -1102,7 +1102,7 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"pagination\x18\x02 \x01(\v2\x1e.matrixhub.v1alpha1.PaginationR\n" +
 	"pagination\"$\n" +
 	"\x12GetRegistryRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\"O\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\"O\n" +
 	"\x13GetRegistryResponse\x128\n" +
 	"\bregistry\x18\x01 \x01(\v2\x1c.matrixhub.v1alpha1.RegistryR\bregistry\"\x84\x02\n" +
 	"\x15CreateRegistryRequest\x12\x12\n" +
@@ -1117,7 +1117,7 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\x16CreateRegistryResponse\x128\n" +
 	"\bregistry\x18\x01 \x01(\v2\x1c.matrixhub.v1alpha1.RegistryR\bregistry\"\xde\x01\n" +
 	"\x15UpdateRegistryRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x10\n" +
 	"\x03url\x18\x05 \x01(\tR\x03url\x12C\n" +
@@ -1128,7 +1128,7 @@ const file_v1alpha1_registry_proto_rawDesc = "" +
 	"\x16UpdateRegistryResponse\x128\n" +
 	"\bregistry\x18\x01 \x01(\v2\x1c.matrixhub.v1alpha1.RegistryR\bregistry\"'\n" +
 	"\x15DeleteRegistryRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\"\x18\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\"\x18\n" +
 	"\x16DeleteRegistryResponse\"\xcc\x01\n" +
 	"\x13PingRegistryRequest\x124\n" +
 	"\x04type\x18\x04 \x01(\x0e2 .matrixhub.v1alpha1.RegistryTypeR\x04type\x12\x10\n" +
