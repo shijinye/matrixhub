@@ -223,19 +223,23 @@ function AppLayout() {
         styles={{
           main: {
             height: 'calc(100vh - var(--app-shell-header-height))',
-            padding: '0 32px',
           },
         }}
       >
         <Box
-          w="100%"
-          h="100%"
-          maw="1760px"
-          miw="1100px"
-          pt="20px"
-          mx="auto"
+          style={{
+            width: '86vw',
+            height: '100%',
+            maxWidth: '1760px',
+            minWidth: '1100px',
+            margin: '0 auto',
+            padding: '0 32px',
+            boxSizing: 'content-box',
+          }}
         >
-          <Outlet />
+          <Box pt={20} h="100%">
+            <Outlet />
+          </Box>
         </Box>
       </AppShell.Main>
     </AppShell>
