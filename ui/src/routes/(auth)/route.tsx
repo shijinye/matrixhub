@@ -44,10 +44,7 @@ function AppLogo() {
         gap={8}
         wrap="nowrap"
       >
-        <LogoIcon
-          fontSize={rem(36)}
-          color="#868E96"
-        />
+        <LogoIcon fontSize={rem(36)} />
         <Text
           fw={600}
           size="xl"

@@ -35,19 +35,16 @@ function AdminNavbar() {
   const { t } = useTranslation()
   const navRoutes = linkOptions([
     {
-      id: AdminUsersRoute.id,
       label: t('admin.users'),
       icon: AdminUsersIcon,
       to: AdminUsersRoute.to,
     },
     {
-      id: AdminRegistriesRoute.id,
       label: t('admin.registries'),
       icon: AdminRegistriesIcon,
       to: AdminRegistriesRoute.to,
     },
     {
-      id: AdminReplicationsRoute.id,
       label: t('admin.replications'),
       icon: AdminReplicationsIcon,
       to: AdminReplicationsRoute.to,
@@ -66,7 +63,7 @@ function AdminNavbar() {
       }}
       scrollbarSize={0}
     >
-      <Stack gap={12} pb={20}>
+      <Stack gap="sm" pb="lg">
         {navRoutes.map((route) => {
           const Icon = route.icon
           const isActive = !!matchRoute({
