@@ -4,19 +4,48 @@ import { initReactI18next } from 'react-i18next'
 
 import { loadLocale } from './loadLocale'
 
+export const SUPPORTED_LANGUAGES = ['en', 'zh'] as const
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]
+
+export const DEFAULT_LANGUAGE: SupportedLanguage = 'en'
+export const LANGUAGE_STORAGE_KEY = 'lang'
+
+export function normalizeLanguage(
+  value: string | null | undefined,
+): SupportedLanguage | null {
+  if (!value) {
+    return null
+  }
+
+  const normalized = value.toLowerCase().split('-')[0]
+
+  if (SUPPORTED_LANGUAGES.includes(normalized as SupportedLanguage)) {
+    return normalized as SupportedLanguage
+  }
+
+  return null
+}
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
-    supportedLngs: ['en', 'zh'],
+    fallbackLng: DEFAULT_LANGUAGE,
+    supportedLngs: [...SUPPORTED_LANGUAGES],
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false,
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: [],
+      lookupLocalStorage: LANGUAGE_STORAGE_KEY,
     },
   })
 
 i18n.on('languageChanged', (lng) => {
-  const bundles = loadLocale(lng)
+  const normalized = normalizeLanguage(lng) ?? DEFAULT_LANGUAGE
+  const bundles = loadLocale(normalized)
 
   let resourceBundle: Record<string, unknown> = {}
 
@@ -27,7 +56,7 @@ i18n.on('languageChanged', (lng) => {
     }
   })
 
-  i18n.addResourceBundle(lng, 'translation', resourceBundle)
+  i18n.addResourceBundle(normalized, 'translation', resourceBundle)
 })
 
 export default i18n
