@@ -112,3 +112,12 @@ func GetCurrentUsername(ctx context.Context) string {
 	}
 	return str
 }
+
+func GetCurrentUserId(ctx context.Context) int {
+	val := ctx.Value(UserIdCtxKey)
+	i, ok := val.(int)
+	if !ok {
+		return 0
+	}
+	return i
+}

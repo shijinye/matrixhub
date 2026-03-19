@@ -46,8 +46,9 @@ func AuthInterceptor(sessionRepo user.ISessionRepo) grpc.UnaryServerInterceptor 
 			return nil, status.Error(codes.Unauthenticated, codes.Unauthenticated.String())
 		}
 
-		// set username in context
+		// set username, user id in context
 		ctx = context.WithValue(ctx, user.UsernameCtxKey, sessionRepo.GetString(ctx, user.UsernameCtxKey.String()))
+		ctx = context.WithValue(ctx, user.UserIdCtxKey, sessionRepo.GetInt(ctx, user.UserIdCtxKey.String()))
 
 		return handler(ctx, req)
 	}

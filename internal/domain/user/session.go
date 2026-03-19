@@ -33,6 +33,7 @@ type ISessionRepo interface {
 	RenewToken(ctx context.Context) error
 	RememberMe(ctx context.Context, val bool)
 	GetString(ctx context.Context, key string) string
+	GetInt(ctx context.Context, key string) int
 	Put(ctx context.Context, key string, val interface{})
 	Destroy(ctx context.Context) error
 	Status(ctx context.Context) scs.Status

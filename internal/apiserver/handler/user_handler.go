@@ -36,7 +36,13 @@ func (u *UserHandler) SetUserSysAdmin(ctx context.Context, request *userv1alpha1
 }
 
 func (u *UserHandler) ResetUserPassword(ctx context.Context, request *userv1alpha1.ResetUserPasswordRequest) (*userv1alpha1.ResetUserPasswordResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "Not implemented")
+	if err := request.ValidateAll(); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	if err := u.userRepo.UpdateUserPassword(ctx, int(request.Id), request.Password); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	return &userv1alpha1.ResetUserPasswordResponse{}, nil
 }
 
 func (u *UserHandler) CreateUser(ctx context.Context, request *userv1alpha1.CreateUserRequest) (*userv1alpha1.CreateUserResponse, error) {

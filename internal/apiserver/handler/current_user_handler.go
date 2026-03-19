@@ -17,6 +17,9 @@ package handler
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/matrixhub-ai/matrixhub/api/go/v1alpha1"
 	"github.com/matrixhub-ai/matrixhub/internal/domain/user"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
@@ -32,8 +35,21 @@ func (cu *CurrentUserHandler) GetCurrentUser(ctx context.Context, request *v1alp
 }
 
 func (cu *CurrentUserHandler) ResetPassword(ctx context.Context, request *v1alpha1.ResetPasswordRequest) (*v1alpha1.ResetPasswordResponse, error) {
-	// TODO implement me
-	panic("implement me")
+	user, err := cu.userRepo.GetUser(ctx, user.GetCurrentUserId(ctx))
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "user not found")
+	}
+	if !user.CheckPassword(request.OldPassword) {
+		return nil, status.Error(codes.InvalidArgument, "old password is incorrect")
+	}
+	if user.CheckPassword(request.NewPassword) {
+		return nil, status.Error(codes.InvalidArgument, "new password is same as old password")
+	}
+
+	if err = cu.userRepo.UpdateUserPassword(ctx, user.ID, request.NewPassword); err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &v1alpha1.ResetPasswordResponse{}, nil
 }
 
 func (cu *CurrentUserHandler) ListAccessTokens(ctx context.Context, request *v1alpha1.ListAccessTokensRequest) (*v1alpha1.ListAccessTokensResponse, error) {
