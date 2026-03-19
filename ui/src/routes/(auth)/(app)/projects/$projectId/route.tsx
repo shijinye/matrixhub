@@ -1,7 +1,6 @@
 import {
   Box, Group, Space, Tabs, Text,
 } from '@mantine/core'
-import { Projects } from '@matrixhub/api-ts/v1alpha1/project.pb'
 import { IconApiApp as ProjectIcon } from '@tabler/icons-react'
 import {
   createFileRoute,
@@ -12,24 +11,13 @@ import {
 } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
-import { notFoundError } from '@/utils/routerAccess'
+import { projectDetailQueryOptions } from '@/features/projects/projects.query'
 
 export const Route = createFileRoute('/(auth)/(app)/projects/$projectId')({
-  loader: async ({ params: { projectId } }) => {
-    try {
-      const res = await Projects.GetProject({
-        name: projectId,
-      })
-
-      if (!res) {
-        throw notFoundError()
-      }
-
-      return { project: res }
-    } catch (error) {
-      console.error('Failed to load project data:', error)
-      throw notFoundError()
-    }
+  loader: async ({
+    context: { queryClient }, params: { projectId },
+  }) => {
+    await queryClient.ensureQueryData(projectDetailQueryOptions(projectId))
   },
   component: RouteComponent,
 })

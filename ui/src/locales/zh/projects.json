@@ -14,6 +14,15 @@
       "emptyTitle": "暂无模型",
       "emptyDescription": "当前项目下还没有模型仓库。",
       "loadFailed": "模型列表加载失败，请稍后重试。"
+    },
+    "settingsPage": {
+      "projectType": "项目类型",
+      "public": "公开",
+      "private": "私有",
+      "proxyAddress": "代理地址",
+      "save": "保存",
+      "cancel": "取消",
+      "updateError": "更新项目设置失败"
     }
   },
   "type": {

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { ProjectSettingsPage } from '@/features/projects/pages/ProjectSettingsPage'
 import { ensureProjectAccess } from '@/utils/routerAccess'
 
 export const Route = createFileRoute(
@@ -8,16 +9,5 @@ export const Route = createFileRoute(
   beforeLoad: async ({ params }) => {
     await ensureProjectAccess(params.projectId)
   },
-  component: RouteComponent,
+  component: ProjectSettingsPage,
 })
-
-function RouteComponent() {
-  const { projectId } = Route.useParams()
-
-  return (
-    <div>
-      Project Settings Page - Project ID:
-      {projectId}
-    </div>
-  )
-}

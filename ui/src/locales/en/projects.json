@@ -14,6 +14,15 @@
       "emptyTitle": "No models yet",
       "emptyDescription": "This project does not contain any models.",
       "loadFailed": "Failed to load models. Please try again later."
+    },
+    "settingsPage": {
+      "projectType": "Project Type",
+      "public": "Public",
+      "private": "Private",
+      "proxyAddress": "Proxy Address",
+      "save": "Save",
+      "cancel": "Cancel",
+      "updateError": "Failed to update project settings"
     }
   },
   "type": {
