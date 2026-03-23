@@ -19,6 +19,8 @@ export function isForbiddenRouteError(error: unknown): error is ForbiddenRouteEr
     || (error instanceof Error && error.name === 'ForbiddenRouteError')
 }
 
+export const forbiddenError = () => new ForbiddenRouteError()
+
 export class NotFoundRouteError extends Error {
   constructor(message = 'The resource you are looking for does not exist.') {
     super(message)
@@ -31,6 +33,8 @@ export function isNotFoundRouteError(error: unknown): error is NotFoundRouteErro
   return error instanceof NotFoundRouteError
     || (error instanceof Error && error.name === 'NotFoundRouteError')
 }
+
+export const notFoundError = () => new NotFoundRouteError()
 
 // ─── Access guard ─────────────────────────────────────────────────────────────
 
@@ -63,7 +67,7 @@ export async function ensureProjectAccess(
     try {
       await queryClient.ensureQueryData(projectQueryOptions(projectId))
     } catch {
-      throw new NotFoundRouteError()
+      throw notFoundError()
     }
 
     // Public projects
@@ -72,10 +76,10 @@ export async function ensureProjectAccess(
     }
 
     // 403
-    throw new ForbiddenRouteError()
+    throw forbiddenError()
   }
 
   if (allowedRoles && !allowedRoles.includes(role)) {
-    throw new ForbiddenRouteError()
+    throw forbiddenError()
   }
 }

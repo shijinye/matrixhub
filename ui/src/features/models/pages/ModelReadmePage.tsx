@@ -9,7 +9,7 @@ export function ModelReadmePage() {
   return (
     <Box pt={20}>
       <Markdown>
-        { model?.readmeContent }
+        { model?.model.readmeContent }
       </Markdown>
     </Box>
   )

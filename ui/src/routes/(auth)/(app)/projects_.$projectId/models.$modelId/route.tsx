@@ -14,7 +14,7 @@ import { projectRolesQueryOptions } from '@/features/auth/auth.query'
 import { buildModelBadges, buildModelMetaItems } from '@/features/models/models.utils'
 import { queryClient } from '@/queryClient'
 import { ResourceDetailHeader } from '@/shared/components/ResourceDetailHeader'
-import { NotFoundRouteError } from '@/utils/routerAccess'
+import { notFoundError } from '@/utils/routerAccess'
 
 import { Route as ModelSettingsRoute } from './settings'
 import { Route as ModelTreeRoute } from './tree/$ref/$'
@@ -36,7 +36,7 @@ export const Route = createFileRoute(
         name: params.modelId,
       })
     } catch {
-      throw new NotFoundRouteError()
+      throw notFoundError()
     }
 
     return {

@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
-import { NotFoundRouteError } from '@/utils/routerAccess'
+import { notFoundError } from '@/utils/routerAccess'
 
 export const Route = createFileRoute('/(auth)/(app)/projects/$projectId')({
   loader: async ({ params: { projectId } }) => {
@@ -22,13 +22,13 @@ export const Route = createFileRoute('/(auth)/(app)/projects/$projectId')({
       })
 
       if (!res) {
-        throw new NotFoundRouteError()
+        throw notFoundError()
       }
 
       return { project: res }
     } catch (error) {
       console.error('Failed to load project data:', error)
-      throw new NotFoundRouteError()
+      throw notFoundError()
     }
   },
   component: RouteComponent,

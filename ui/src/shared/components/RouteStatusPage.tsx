@@ -35,9 +35,9 @@ export function RouteStatusPage({
         lh="1"
         lts="-0.04em"
         left="50%"
+        fz="clamp(180px, 35vw, 500px)"
         style={{
           top: 'calc(50% - var(--app-shell-header-height) / 2)',
-          fontSize: 'clamp(180px, 35vw, 500px)',
           userSelect: 'none',
           transform: 'translateY(-50%) translateX(-50%)',
         }}
