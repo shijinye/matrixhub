@@ -1,14 +1,14 @@
 import {
-  Badge,
   Group,
   Paper,
   Stack,
   Text,
   UnstyledButton,
 } from '@mantine/core'
-import { type Project, ProjectType } from '@matrixhub/api-ts/v1alpha1/project.pb.ts'
+import { type Project } from '@matrixhub/api-ts/v1alpha1/project.pb.ts'
 import { useTranslation } from 'react-i18next'
 
+import { ProjectTypeBadge } from '@/shared/components/badges/ProjectTypeBadge'
 import { BaseFilterPanel } from '@/shared/components/resource-filter-panel/BaseFilterPanel'
 import { filterByKeyword } from '@/shared/utils'
 
@@ -18,29 +18,12 @@ interface ProjectCardProps {
   onSelect?: (option: string) => void
 }
 
-const PROJECT_TYPE_BADGE_CONFIG: Partial<Record<ProjectType, {
-  color: string
-  labelKey: string
-}>> = {
-  [ProjectType.PROJECT_TYPE_PUBLIC]: {
-    color: 'teal',
-    labelKey: 'projects.type.public',
-  },
-  [ProjectType.PROJECT_TYPE_PRIVATE]: {
-    color: 'yellow',
-    labelKey: 'projects.type.private',
-  },
-}
-
 function ProjectCard({
   option,
   selected = false,
   onSelect,
 }: ProjectCardProps) {
   const { t } = useTranslation()
-  const badgeConfig = option.type
-    ? PROJECT_TYPE_BADGE_CONFIG[option.type]
-    : undefined
 
   return (
     <UnstyledButton
@@ -74,20 +57,7 @@ function ProjectCard({
           >
             {option.name}
           </Text>
-          {badgeConfig
-            ? (
-                <Badge
-                  variant="light"
-                  radius="xl"
-                  size="xs"
-                  px="sm"
-                  color={badgeConfig.color}
-                  flex="0 0 auto"
-                >
-                  {t(badgeConfig.labelKey)}
-                </Badge>
-              )
-            : null}
+          <ProjectTypeBadge type={option.type} flex="0 0 auto" />
         </Group>
 
         <Group

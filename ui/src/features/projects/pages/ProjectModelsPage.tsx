@@ -10,7 +10,7 @@ import {
   IconClock,
   IconCube,
 } from '@tabler/icons-react'
-import { getRouteApi } from '@tanstack/react-router'
+import { getRouteApi, Link } from '@tanstack/react-router'
 import { startTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -27,12 +27,10 @@ import { SortDropdown } from '@/shared/components/SortDropdown'
 import type { SortDropdownOption } from '@/shared/components/SortDropdown'
 
 const projectModelsRouteApi = getRouteApi('/(auth)/(app)/projects/$projectId/models/')
-const modelCreateRouteApi = getRouteApi('/(auth)/(app)/models/new')
 
 export function ProjectModelsPage() {
   const { projectId } = projectModelsRouteApi.useParams()
   const navigate = projectModelsRouteApi.useNavigate()
-  const navigateToModelCreate = modelCreateRouteApi.useNavigate()
   const {
     q: query,
     sort: sortField,
@@ -140,21 +138,16 @@ export function ProjectModelsPage() {
             }}
           />
 
-          <Button
-            h={32}
-            px="md"
-            radius={6}
-            leftSection={<IconCube size={16} />}
-            onClick={() => {
-              void navigateToModelCreate({
-                search: {
-                  projectId,
-                },
-              })
-            }}
-          >
-            {t('projects.detail.modelsPage.create')}
-          </Button>
+          <Link to="/models/new" search={{ projectId }}>
+            <Button
+              h={32}
+              px="md"
+              radius={6}
+              leftSection={<IconCube size={16} />}
+            >
+              {t('projects.detail.modelsPage.create')}
+            </Button>
+          </Link>
         </SearchToolbar>
 
         <Space h="lg"></Space>

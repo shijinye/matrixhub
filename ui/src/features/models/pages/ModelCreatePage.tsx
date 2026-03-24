@@ -1,16 +1,15 @@
 import {
-  ActionIcon,
-  Badge,
   Button,
+  Combobox,
   Group,
-  Select,
+  InputBase,
   Stack,
   Text,
   TextInput,
   Title,
   Tooltip,
+  useCombobox,
 } from '@mantine/core'
-import { Projects, ProjectType } from '@matrixhub/api-ts/v1alpha1/project.pb'
 import { IconInfoCircle } from '@tabler/icons-react'
 import { useForm } from '@tanstack/react-form'
 import {
@@ -18,58 +17,27 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 import { getRouteApi } from '@tanstack/react-router'
-import {
-  useEffect,
-  useMemo,
-} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { createModelMutationOptions } from '@/features/models/models.mutation'
+import { modelProjectsQueryOptions } from '@/features/models/models.query.ts'
 import { createModelSchema } from '@/features/models/models.schema'
+import { ProjectTypeBadge } from '@/shared/components/badges/ProjectTypeBadge'
 
 interface ModelCreatePageProps {
   initialProjectId?: string
 }
 
-interface ProjectOption {
-  value: string
-  label: string
-  isPublic: boolean
-}
+const routeApi = getRouteApi('/(auth)/(app)/models/')
 
 export function ModelCreatePage({ initialProjectId = '' }: ModelCreatePageProps) {
   const { t } = useTranslation()
-  const routeApi = getRouteApi('/(auth)/(app)/models/')
   const navigate = routeApi.useNavigate()
+
   const createMutation = useMutation(createModelMutationOptions())
+  const { data: projects = [] } = useQuery(modelProjectsQueryOptions())
 
-  const { data: projects = [] } = useQuery({
-    queryKey: ['ModelCreate.ListProjects'],
-    queryFn: async () => {
-      const response = await Projects.ListProjects({})
-
-      return response.projects ?? []
-    },
-  })
-
-  const projectOptions = useMemo<ProjectOption[]>(() => {
-    return projects
-      .map((project) => {
-        const projectName = project.name?.trim()
-
-        if (!projectName) {
-          return null
-        }
-
-        return {
-          value: projectName,
-          label: projectName,
-          isPublic: project.type === ProjectType.PROJECT_TYPE_PUBLIC,
-        }
-      })
-      .filter((option): option is ProjectOption => option !== null)
-  }, [projects])
-
+  const projectCombobox = useCombobox()
   const modelCreateSchema = createModelSchema(t)
 
   const form = useForm({
@@ -91,16 +59,11 @@ export function ModelCreatePage({ initialProjectId = '' }: ModelCreatePageProps)
     },
   })
 
-  useEffect(() => {
-    const selectedProjectId = form.state.values.projectId
-
-    if (projectOptions.length === 0
-      || (selectedProjectId && projectOptions.find(option => option.value === selectedProjectId))) {
-      return
-    }
-
-    form.setFieldValue('projectId', projectOptions[0]?.value ?? '')
-  }, [form, projectOptions])
+  if (projects.length
+    && form.state.values.projectId
+    && !projects?.find(option => option.name === form.state.values.projectId)) {
+    form.setFieldValue('projectId', projects[0]?.name ?? '')
+  }
 
   return (
     <Stack
@@ -134,50 +97,68 @@ export function ModelCreatePage({ initialProjectId = '' }: ModelCreatePageProps)
           </form.Field>
 
           <form.Field name="projectId">
-            {field => (
-              <Select
-                label={(
-                  <Group
-                    component="span"
-                    gap={6}
-                    align="center"
-                    wrap="nowrap"
-                    style={{ display: 'inline-flex' }}
-                  >
-                    <Text size="sm" fw={500}>{t('model.create.project')}</Text>
-                    <Tooltip label={t('model.create.projectTooltip')}>
-                      <ActionIcon
-                        variant="subtle"
-                        size="sm"
-                        color="gray"
-                      >
-                        <IconInfoCircle size={16} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Group>
-                )}
-                withAsterisk
-                placeholder={t('model.create.projectPlaceholder')}
-                value={field.state.value || null}
-                error={field.state.meta.errors[0]?.message?.toString()}
-                data={projectOptions}
-                allowDeselect={false}
-                renderOption={({ option }) => {
-                  const currentOption = option as ProjectOption
+            {(field) => {
+              const selectedProjectOption = projects.find(option => option.name === field.state.value)
 
-                  return (
-                    <Group gap={8} wrap="nowrap">
-                      <Text size="sm">{currentOption.label}</Text>
-                      <Badge size="xs" variant="light" color={currentOption.isPublic ? 'green' : 'gray'}>
-                        {currentOption.isPublic ? t('projects.type.public') : t('projects.type.private')}
-                      </Badge>
-                    </Group>
-                  )
-                }}
-                onBlur={field.handleBlur}
-                onChange={value => field.handleChange(value ?? '')}
-              />
-            )}
+              return (
+                <Combobox
+                  store={projectCombobox}
+                  onOptionSubmit={(value) => {
+                    field.handleChange(value)
+                    projectCombobox.closeDropdown()
+                  }}
+                >
+                  <Combobox.Target>
+                    <InputBase
+                      component="button"
+                      type="button"
+                      label={(
+                        <Group
+                          component="span"
+                          gap={6}
+                          align="center"
+                          wrap="nowrap"
+                          style={{ display: 'inline-flex' }}
+                        >
+                          <span>{t('model.create.project')}</span>
+                          <Tooltip label={t('model.create.projectTooltip')}>
+                            <IconInfoCircle size={16} />
+                          </Tooltip>
+                        </Group>
+                      )}
+                      withAsterisk
+                      error={field.state.meta.errors[0]?.message?.toString()}
+                      rightSection={<Combobox.Chevron />}
+                      rightSectionPointerEvents="none"
+                      onBlur={field.handleBlur}
+                      onClick={() => projectCombobox.toggleDropdown()}
+                    >
+                      {selectedProjectOption
+                        ? (
+                            <Group gap={8} wrap="nowrap">
+                              <Text size="sm">{selectedProjectOption.name}</Text>
+                              <ProjectTypeBadge type={selectedProjectOption.type} />
+                            </Group>
+                          )
+                        : <Text c="dimmed" size="sm">{t('model.create.projectPlaceholder')}</Text>}
+                    </InputBase>
+                  </Combobox.Target>
+
+                  <Combobox.Dropdown>
+                    <Combobox.Options>
+                      {projects.map(option => (
+                        <Combobox.Option value={option.name as string} key={option.name}>
+                          <Group gap={8} wrap="nowrap">
+                            <Text size="sm">{option.name}</Text>
+                            <ProjectTypeBadge type={option.type} />
+                          </Group>
+                        </Combobox.Option>
+                      ))}
+                    </Combobox.Options>
+                  </Combobox.Dropdown>
+                </Combobox>
+              )
+            }}
           </form.Field>
 
           <form.Subscribe selector={s => [s.canSubmit, s.isSubmitting, s.isPristine]}>

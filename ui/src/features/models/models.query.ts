@@ -114,7 +114,9 @@ export function modelProjectsQueryOptions() {
   return queryOptions({
     queryKey: modelKeys.projects(),
     queryFn: async () => {
-      const response = await Projects.ListProjects({})
+      const response = await Projects.ListProjects({
+        pageSize: -1,
+      })
 
       return response.projects ?? []
     },
