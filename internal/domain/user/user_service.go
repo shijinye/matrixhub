@@ -38,7 +38,7 @@ var (
 
 type IUserService interface {
 	LoginUser(ctx context.Context, username, password string, rememberMe bool) (*http.Cookie, error)
-	LogoutUser(ctx context.Context) error
+	LogoutUser(ctx context.Context) (*http.Cookie, error)
 	GetCurrentUser(ctx context.Context) (*User, error)
 }
 
@@ -81,7 +81,7 @@ func (us UserService) LoginUser(ctx context.Context, username, password string, 
 	sessionCookie := us.sessionRepo.GetSessionCookie()
 
 	return &http.Cookie{
-		Name:     sessionCookie.Name, // 默认 "session"
+		Name:     sessionCookie.Name,
 		Value:    token,
 		Path:     sessionCookie.Path,
 		Domain:   sessionCookie.Domain,
@@ -92,8 +92,24 @@ func (us UserService) LoginUser(ctx context.Context, username, password string, 
 	}, nil
 }
 
-func (us UserService) LogoutUser(ctx context.Context) error {
-	return us.sessionRepo.Destroy(ctx)
+func (us UserService) LogoutUser(ctx context.Context) (*http.Cookie, error) {
+	if err := us.sessionRepo.Destroy(ctx); err != nil {
+		return nil, err
+	}
+	sessionCookie := us.sessionRepo.GetSessionCookie()
+	// clear cookie
+	cookie := &http.Cookie{
+		Name:     sessionCookie.Name,
+		Value:    "",
+		Path:     sessionCookie.Path,
+		Domain:   sessionCookie.Domain,
+		Expires:  time.Unix(1, 0),
+		MaxAge:   -1,
+		HttpOnly: sessionCookie.HttpOnly,
+		Secure:   sessionCookie.Secure,
+		SameSite: sessionCookie.SameSite,
+	}
+	return cookie, nil
 }
 
 func NewUserService(session ISessionRepo, user IUserRepo) IUserService {

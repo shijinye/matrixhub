@@ -84,7 +84,6 @@ func (x *LoginRequest) GetRememberMe() bool {
 
 type LoginResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Cookie        string                 `protobuf:"bytes,1,opt,name=cookie,proto3" json:"cookie,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -117,13 +116,6 @@ func (x *LoginResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
 func (*LoginResponse) Descriptor() ([]byte, []int) {
 	return file_v1alpha1_login_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *LoginResponse) GetCookie() string {
-	if x != nil {
-		return x.Cookie
-	}
-	return ""
 }
 
 type LogoutRequest struct {
@@ -207,9 +199,8 @@ const file_v1alpha1_login_proto_rawDesc = "" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1f\n" +
 	"\vremember_me\x18\x03 \x01(\bR\n" +
-	"rememberMe\"'\n" +
-	"\rLoginResponse\x12\x16\n" +
-	"\x06cookie\x18\x01 \x01(\tR\x06cookie\"\x0f\n" +
+	"rememberMe\"\x0f\n" +
+	"\rLoginResponse\"\x0f\n" +
 	"\rLogoutRequest\"\x10\n" +
 	"\x0eLogoutResponse2\xe7\x01\n" +
 	"\x05Login\x12l\n" +

@@ -16,13 +16,16 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"slices"
+	"strings"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/protobuf/proto"
 )
 
-// grpc-gateway 302 redirect
-// https://stackoverflow.com/questions/49878855/how-to-do-a-302-redirect-in-grpc-gateway
+// ResponseHeaderLocation grpc-gateway 302 redirect
 func ResponseHeaderLocation(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
 	headers := w.Header()
 	if location, ok := headers["Grpc-Metadata-Location"]; ok {
@@ -30,4 +33,13 @@ func ResponseHeaderLocation(ctx context.Context, w http.ResponseWriter, resp pro
 		w.WriteHeader(http.StatusFound)
 	}
 	return nil
+}
+
+func HeaderMatcher(s string) (string, bool) {
+	s = strings.ToLower(strings.TrimSpace(s))
+	directHeaders := []string{"set-cookie", "content-disposition"}
+	if slices.Contains(directHeaders, s) {
+		return s, true
+	}
+	return fmt.Sprintf("%s%s", runtime.MetadataHeaderPrefix, s), true
 }

@@ -12,7 +12,6 @@ export type LoginRequest = {
 }
 
 export type LoginResponse = {
-  cookie?: string
 }
 
 export type LogoutRequest = {

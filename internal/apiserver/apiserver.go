@@ -83,12 +83,7 @@ func NewAPIServer(config *config.Config) *APIServer {
 
 	gatewayMux := runtime.NewServeMux(
 		runtime.WithForwardResponseOption(middleware.ResponseHeaderLocation),
-		runtime.WithOutgoingHeaderMatcher(func(s string) (string, bool) {
-			if s == "Content-Disposition" {
-				return s, true
-			}
-			return fmt.Sprintf("%s%s", runtime.MetadataHeaderPrefix, s), true
-		}),
+		runtime.WithOutgoingHeaderMatcher(middleware.HeaderMatcher),
 	)
 
 	httpServer := &http.Server{

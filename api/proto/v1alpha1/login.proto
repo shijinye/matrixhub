@@ -28,9 +28,7 @@ message LoginRequest {
   bool remember_me = 3;
 }
 
-message LoginResponse {
-  string cookie = 1;
-}
+message LoginResponse {}
 
 message LogoutRequest {}
 
