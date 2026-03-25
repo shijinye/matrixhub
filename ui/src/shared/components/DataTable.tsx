@@ -258,7 +258,7 @@ export function DataTable<TData extends MRT_RowData>({
                 loading={loading}
                 c="gray.6"
               >
-                <IconRefresh width={24} height={24} />
+                <IconRefresh size={24} />
               </ActionIcon>
             </Tooltip>
           )}
@@ -266,7 +266,7 @@ export function DataTable<TData extends MRT_RowData>({
             color="red"
             variant="light"
             disabled={!showBatchDelete}
-            leftSection={<IconTrash width={16} height={16} />}
+            leftSection={<IconTrash size={16} />}
             onClick={onBatchDelete}
           >
             {!selectedCount

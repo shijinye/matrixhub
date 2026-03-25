@@ -1,12 +1,8 @@
-import { Button, Space } from '@mantine/core'
+import { Box, Button } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { IconPlus } from '@tabler/icons-react'
 import { getRouteApi } from '@tanstack/react-router'
-import {
-  useCallback,
-  useMemo,
-  useState,
-} from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { AddMemberModal } from '../components/AddMemberModal'
@@ -33,7 +29,7 @@ export function ProjectMembersPage() {
     page: search.page,
   })
 
-  const members = useMemo(() => data?.members ?? [], [data?.members])
+  const members = data?.members ?? []
   const pagination = data?.pagination
 
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
@@ -46,7 +42,7 @@ export function ProjectMembersPage() {
 
   const [processMember, setProcessMember] = useState<ProjectMember | null>(null)
 
-  const handleSearchChange = useCallback((value: string) => {
+  const handleSearchChange = (value: string) => {
     if (value === search.q) {
       return
     }
@@ -60,9 +56,9 @@ export function ProjectMembersPage() {
         q: value,
       }),
     })
-  }, [navigate, search.q])
+  }
 
-  const handlePageChange = useCallback((page: number) => {
+  const handlePageChange = (page: number) => {
     setRowSelection({})
     void navigate({
       search: prev => ({
@@ -70,52 +66,60 @@ export function ProjectMembersPage() {
         page,
       }),
     })
-  }, [navigate])
+  }
 
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = () => {
     setRowSelection({})
     void refetch()
-  }, [refetch])
+  }
 
-  const selectedMembers = useMemo(
-    () => members.filter((m) => {
-      const key = `${m.memberType}:${m.memberId}`
+  const selectedMembers = members.filter((m) => {
+    const key = `${m.memberType}:${m.memberId}`
 
-      return !!rowSelection[key]
-    }),
-    [members, rowSelection],
-  )
+    return !!rowSelection[key]
+  })
 
-  const handleEditMember = useCallback((member: ProjectMember) => {
+  const handleEditMember = (member: ProjectMember) => {
     setProcessMember(member)
     editHandlers.open()
-  }, [editHandlers])
+  }
 
-  const handleRemoveMember = useCallback((member: ProjectMember) => {
+  const handleRemoveMember = (member: ProjectMember) => {
     setProcessMember(member)
     removeHandlers.open()
-  }, [removeHandlers])
+  }
 
-  const handleBatchRemove = useCallback(() => {
+  const handleBatchRemove = () => {
     if (selectedMembers.length === 0) {
       return
     }
     batchRemoveHandlers.open()
-  }, [selectedMembers.length, batchRemoveHandlers])
+  }
 
-  const handleBatchRemoveClose = useCallback(() => {
+  const handleBatchRemoveClose = () => {
     batchRemoveHandlers.close()
     setRowSelection({})
-  }, [batchRemoveHandlers])
+    void refetch()
+  }
 
-  const handleRemoveClose = useCallback(() => {
+  const handleRemoveClose = () => {
     removeHandlers.close()
     setRowSelection({})
-  }, [removeHandlers])
+    void refetch()
+  }
+
+  const handleAddClose = () => {
+    addHandlers.close()
+    void refetch()
+  }
+
+  const handleEditClose = () => {
+    editHandlers.close()
+    void refetch()
+  }
 
   return (
-    <>
-      <Space h="lg" />
+    <Box py="lg">
       <MembersTable
         records={members}
         pagination={pagination}
@@ -133,7 +137,7 @@ export function ProjectMembersPage() {
         selectedCount={selectedMembers.length}
         toolbarExtra={(
           <Button
-            leftSection={<IconPlus width={16} height={16} />}
+            leftSection={<IconPlus size={16} />}
             onClick={addHandlers.open}
           >
             {t('projects.detail.membersPage.addMember')}
@@ -143,13 +147,13 @@ export function ProjectMembersPage() {
 
       <AddMemberModal
         opened={addOpened}
-        onClose={addHandlers.close}
+        onClose={handleAddClose}
         projectId={projectId}
       />
 
       <EditRoleModal
         opened={editOpened}
-        onClose={editHandlers.close}
+        onClose={handleEditClose}
         projectId={projectId}
         member={processMember}
       />
@@ -158,7 +162,7 @@ export function ProjectMembersPage() {
         opened={removeOpened}
         onClose={handleRemoveClose}
         projectId={projectId}
-        member={processMember}
+        members={processMember ? [processMember] : []}
       />
 
       <RemoveMemberModal
@@ -167,6 +171,6 @@ export function ProjectMembersPage() {
         projectId={projectId}
         members={selectedMembers}
       />
-    </>
+    </Box>
   )
 }

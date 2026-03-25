@@ -4,13 +4,16 @@ import {
   queryOptions,
   useQuery,
 } from '@tanstack/react-query'
+import { z } from 'zod'
 
 export const MEMBERS_PAGE_SIZE = 10
 
-export interface MembersSearch {
-  q: string
-  page: number
-}
+export const membersSearchSchema = z.object({
+  q: z.string().transform(v => v.trim()).catch(''),
+  page: z.coerce.number().int().positive().catch(1),
+})
+
+export type MembersSearch = z.infer<typeof membersSearchSchema>
 
 // -- Query key factory --
 

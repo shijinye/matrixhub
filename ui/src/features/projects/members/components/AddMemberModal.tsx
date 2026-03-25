@@ -1,13 +1,11 @@
 import { Select, Stack } from '@mantine/core'
 import { MemberType } from '@matrixhub/api-ts/v1alpha1/project.pb'
-import { ProjectRoleType } from '@matrixhub/api-ts/v1alpha1/role.pb'
 import { Users } from '@matrixhub/api-ts/v1alpha1/user.pb'
 import { useForm, useStore } from '@tanstack/react-form'
 import {
   useMutation,
   useQuery,
 } from '@tanstack/react-query'
-import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -15,7 +13,10 @@ import i18n from '@/i18n'
 import { ModalWrapper } from '@/shared/components/ModalWrapper'
 import { fieldError } from '@/shared/utils/form'
 
+import { useProjectRoleOptions } from '../member.utils'
 import { addMemberMutationOptions } from '../members.mutation'
+
+import type { ProjectRoleType } from '@matrixhub/api-ts/v1alpha1/role.pb'
 
 interface AddMemberModalProps {
   opened: boolean
@@ -23,14 +24,7 @@ interface AddMemberModalProps {
   projectId: string
 }
 
-const requiredString = z.string().superRefine((value, ctx) => {
-  if (!value || value.trim() === '') {
-    ctx.addIssue({
-      code: 'custom',
-      message: i18n.t('common.validation.required'),
-    })
-  }
-})
+const requiredString = z.string().min(1, i18n.t('common.validation.required'))
 
 const defaultValues = {
   memberType: MemberType.MEMBER_TYPE_USER as string,
@@ -71,20 +65,7 @@ export function AddMemberModal({
     },
   ]
 
-  const roleOptions = [
-    {
-      value: ProjectRoleType.ROLE_TYPE_PROJECT_ADMIN,
-      label: t('projects.detail.membersPage.role.admin'),
-    },
-    {
-      value: ProjectRoleType.ROLE_TYPE_PROJECT_EDITOR,
-      label: t('projects.detail.membersPage.role.editor'),
-    },
-    {
-      value: ProjectRoleType.ROLE_TYPE_PROJECT_VIEWER,
-      label: t('projects.detail.membersPage.role.viewer'),
-    },
-  ]
+  const roleOptions = useProjectRoleOptions()
 
   const memberType = useStore(form.store, s => s.values.memberType)
 
@@ -92,7 +73,7 @@ export function AddMemberModal({
     queryKey: ['users', 'list'],
     queryFn: () => Users.ListUsers({
       page: 1,
-      pageSize: 100,
+      pageSize: -1,
     }),
     enabled: opened && memberType === MemberType.MEMBER_TYPE_USER,
   })
@@ -102,17 +83,17 @@ export function AddMemberModal({
     label: u.username ?? '',
   }))
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     form.reset()
     onClose()
-  }, [form, onClose])
+  }
 
   const canSubmit = useStore(form.store, s => s.canSubmit && !s.isSubmitting)
   const isSubmitting = useStore(form.store, s => s.isSubmitting)
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = () => {
     void form.handleSubmit()
-  }, [form])
+  }
 
   return (
     <ModalWrapper

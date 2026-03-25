@@ -3,21 +3,22 @@ import {
   Stack,
   TextInput,
 } from '@mantine/core'
-import { ProjectRoleType } from '@matrixhub/api-ts/v1alpha1/role.pb'
 import { useForm, useStore } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
+import i18n from '@/i18n'
 import { ModalWrapper } from '@/shared/components/ModalWrapper'
 import { fieldError } from '@/shared/utils/form'
 
+import { useProjectRoleOptions } from '../member.utils'
 import { updateMemberRoleMutationOptions } from '../members.mutation'
 
 import type { ProjectMember } from '@matrixhub/api-ts/v1alpha1/project.pb'
+import type { ProjectRoleType } from '@matrixhub/api-ts/v1alpha1/role.pb'
 
-const requiredString = z.string().min(1)
+const requiredString = z.string().min(1, i18n.t('common.validation.required'))
 
 interface EditRoleModalProps {
   opened: boolean
@@ -54,37 +55,19 @@ export function EditRoleModal({
     },
   })
 
-  // Sync form when member prop changes
-  useEffect(() => {
-    form.setFieldValue('role', member?.role ?? '')
-  }, [form, member])
+  const roleOptions = useProjectRoleOptions()
 
-  const roleOptions = [
-    {
-      value: ProjectRoleType.ROLE_TYPE_PROJECT_ADMIN,
-      label: t('projects.detail.membersPage.role.admin'),
-    },
-    {
-      value: ProjectRoleType.ROLE_TYPE_PROJECT_EDITOR,
-      label: t('projects.detail.membersPage.role.editor'),
-    },
-    {
-      value: ProjectRoleType.ROLE_TYPE_PROJECT_VIEWER,
-      label: t('projects.detail.membersPage.role.viewer'),
-    },
-  ]
-
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     form.reset()
     onClose()
-  }, [form, onClose])
+  }
 
   const canSubmit = useStore(form.store, s => s.canSubmit && !s.isSubmitting)
   const isSubmitting = useStore(form.store, s => s.isSubmitting)
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = () => {
     void form.handleSubmit()
-  }, [form])
+  }
 
   return (
     <ModalWrapper
@@ -108,6 +91,7 @@ export function EditRoleModal({
             <Select
               label={t('projects.detail.membersPage.editRoleModal.roleType')}
               withAsterisk
+              allowDeselect={false}
               data={roleOptions}
               value={field.state.value || null}
               onChange={value => field.handleChange(value ?? '')}

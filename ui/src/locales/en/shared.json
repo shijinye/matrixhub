@@ -2,7 +2,7 @@
   "search": "Search",
   "refresh": "Refresh",
   "batchDeleteWithCount": "Delete {{count}} selected",
-  "batchDelete": "",
+  "batchDelete": "Batch Delete",
   "total": "Total {{count}}",
   "sortOrderAsc": "Asc",
   "sortOrderDesc": "Desc"

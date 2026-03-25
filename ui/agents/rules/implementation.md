@@ -74,7 +74,7 @@ Baseline rules — see `tanstack-form.md` for full conventions and Mantine bindi
 - Use `Zod` as the default validation and schema definition approach for form data; let Zod provide the error messages — do not hand-write error strings that duplicate what the schema already expresses
 - Do not use uncontrolled forms, native ad-hoc form state, Mantine `useForm`, or other form libraries for new form work
 - Pass Zod schemas directly to field-level `validators` (e.g. `validators: { onSubmit: schema }`) — TanStack Form v1 supports Standard Schema natively, so Zod schemas work without an adapter; do not write manual `safeParse` calls
-- Use `fieldError(field.state.meta.errors)` from `@/shared/utils/form` to extract the first error message for Mantine `error` props — Standard Schema errors are objects, not strings
+- Use `fieldError(field)` from `@/shared/utils/form` to extract the first error message for Mantine `error` props — Standard Schema errors are complex objects, not strings
 - Use Mantine's own `label` and `withAsterisk` props on form field components for labelling — do not render separate `<Text>` elements as field labels
 - Keep Mantine as the field UI layer; bind TanStack Form state to Mantine component props such as `value`, `checked`, `onChange`, and `error`
 - Connect form `onSubmit` to TanStack Query mutations — see `tanstack-integration.md` for the full pattern
