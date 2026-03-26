@@ -5,6 +5,7 @@ go 1.25.0
 require (
 	github.com/alexedwards/scs/mysqlstore v0.0.0-20251002162104-209de6e426de
 	github.com/alexedwards/scs/v2 v2.9.0
+	github.com/antihax/optional v1.0.0
 	github.com/envoyproxy/protoc-gen-validate v1.3.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-logr/zapr v1.3.0
@@ -24,6 +25,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	go.uber.org/zap v1.27.1
 	golang.org/x/crypto v0.48.0
+	golang.org/x/oauth2 v0.36.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260128011058-8636f8732409
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.11

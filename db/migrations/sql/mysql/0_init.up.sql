@@ -211,11 +211,11 @@ CREATE TABLE IF NOT EXISTS `sync_jobs`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-INSERT INTO `roles` (`name`, `permissions`, `scope`)
-VALUES ('platform_admin', '*', 'platform'),
-       ('project_admin', '*', 'project'),
-       ('project_editor', 'read,write', 'project'),
-       ('project_viewer', 'read', 'project');
+INSERT INTO `roles` (`id`, `name`, `permissions`, `scope`)
+VALUES (1, 'platform_admin', '["*.*"]', 'platform'),
+       (2, 'project_admin', '["project.read","project.create","project.update","project.delete","member.read","member.add","member.remove","member.role_update","model.*","dataset.*"]', 'project'),
+       (3, 'project_editor', '["project.read","project.create","member.read","model.read","model.pull","model.push","dataset.read","dataset.pull","dataset.push"]', 'project'),
+       (4, 'project_viewer', '["project.read","project.create","member.read","model.read","model.pull","dataset.read","dataset.pull"]', 'project');
 
 CREATE TABLE IF NOT EXISTS sessions (
     token CHAR(43) COLLATE utf8mb4_bin PRIMARY KEY,
@@ -223,3 +223,11 @@ CREATE TABLE IF NOT EXISTS sessions (
     expiry TIMESTAMP(6) NOT NULL,
     INDEX sessions_expiry_idx (expiry)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+INSERT INTO `users` (`username`, `password`, `email`, `created_at`, `updated_at`)
+VALUES
+    ('admin', '$2a$10$GD9CROEWOuDcfGRbF3vB7e2bVplplnNW35uc03mju/Lm3ACEIylde', '', '2026-03-15 02:56:55', '2026-03-15 02:56:55');
+
+INSERT INTO `members_roles_projects` (`member_id`, `member_type`, `role_id`, `project_id`)
+VALUES
+    ('1', 'user', 1, NULL);

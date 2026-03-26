@@ -18,6 +18,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/matrixhub-ai/matrixhub/internal/domain/authz"
 	"github.com/matrixhub-ai/matrixhub/internal/domain/role"
 )
 
@@ -59,7 +60,7 @@ const (
 
 type ProjectMember struct {
 	ID         int           `gorm:"primary_key"`
-	ProjectID  int           `gorm:"column:project_id;index"`
+	ProjectID  *int          `gorm:"column:project_id;index"`
 	MemberID   string        `gorm:"column:member_id"`
 	MemberType MemberType    `gorm:"column:member_type"`
 	MemberName string        `gorm:"column:member_name;<-:false"`
@@ -90,4 +91,19 @@ type IProjectRepo interface {
 	AddProjectMemberWithRole(ctx context.Context, projectMember *ProjectMember) error
 	RemoveProjectMembers(ctx context.Context, projectID int, members []*Member) error
 	UpdateProjectMemberRole(ctx context.Context, projectID int, member Member, role role.RoleType) error
+
+	// GetUserProjectPermissions gets user's permissions in a project
+	GetUserProjectPermissions(ctx context.Context, userID string, projectID int) ([]authz.Permission, error)
+
+	// GetUserPlatformPermissions gets user's platform-level permissions
+	GetUserPlatformPermissions(ctx context.Context, userID string) ([]authz.Permission, error)
+
+	// SetUserSysAdmin sets user as system admin
+	SetUserSysAdmin(ctx context.Context, userID string, isAdmin bool) error
+
+	// IsUserSysAdmin checks if user is system admin
+	IsUserSysAdmin(ctx context.Context, userID string) (bool, error)
+
+	// GetUserAllProjectRoles gets user's roles in all projects (returns project_name -> role_id mapping)
+	GetUserAllProjectRoles(ctx context.Context, userID string) (map[string]int, error)
 }
