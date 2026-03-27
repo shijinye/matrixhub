@@ -22,6 +22,7 @@ import (
 	"sync"
 
 	v1alpha1current_user "github.com/matrixhub-ai/matrixhub/test/client/v1alpha1/current_user"
+	v1alpha1model "github.com/matrixhub-ai/matrixhub/test/client/v1alpha1/model"
 	v1alpha1project "github.com/matrixhub-ai/matrixhub/test/client/v1alpha1/project"
 	v1alpha1user "github.com/matrixhub-ai/matrixhub/test/client/v1alpha1/user"
 )
@@ -34,6 +35,7 @@ var (
 	v1alpha1ProjectsApi    *v1alpha1project.ProjectsApiService
 	v1alpha1UsersApi       *v1alpha1user.UsersApiService
 	v1alpha1CurrentUserApi *v1alpha1current_user.CurrentUserApiService
+	v1alpha1ModelsApi      *v1alpha1model.ModelsApiService
 )
 
 // InitHTTPClients initializes HTTP API clients with admin authentication
@@ -88,6 +90,14 @@ func InitHTTPClients() error {
 		}
 		v1alpha1CurrentUserApi = v1alpha1current_user.NewAPIClient(currentUserCfg).CurrentUserApi
 
+		// Initialize Model API client
+		modelCfg := &v1alpha1model.Configuration{
+			BasePath:      baseURL,
+			DefaultHeader: defaultHeaders,
+			HTTPClient:    httpClient,
+		}
+		v1alpha1ModelsApi = v1alpha1model.NewAPIClient(modelCfg).ModelsApi
+
 		log.Println("HTTP clients initialized successfully")
 	})
 
@@ -125,6 +135,40 @@ func GetV1alpha1CurrentUserApi() *v1alpha1current_user.CurrentUserApiService {
 		}
 	}
 	return v1alpha1CurrentUserApi
+}
+
+// GetV1alpha1ModelsApi returns the Models HTTP API client
+func GetV1alpha1ModelsApi() *v1alpha1model.ModelsApiService {
+	if v1alpha1ModelsApi == nil {
+		err := InitHTTPClients()
+		if err != nil {
+			panic(err)
+		}
+	}
+	return v1alpha1ModelsApi
+}
+
+// CreateModelClientWithCookie creates a new Model API client with a specific cookie
+func CreateModelClientWithCookie(cookie string) *v1alpha1model.ModelsApiService {
+	baseURL := GetBaseURL()
+
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // #nosec G402
+			Proxy:           http.ProxyFromEnvironment,
+		},
+	}
+
+	cfg := &v1alpha1model.Configuration{
+		BasePath: baseURL,
+		DefaultHeader: map[string]string{
+			"Cookie":       cookie,
+			"Content-Type": "application/json",
+		},
+		HTTPClient: httpClient,
+	}
+
+	return v1alpha1model.NewAPIClient(cfg).ModelsApi
 }
 
 // CreateAPIClientWithCookie creates a new API client with a specific cookie
