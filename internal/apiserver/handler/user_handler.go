@@ -24,6 +24,7 @@ import (
 
 	userv1alpha1 "github.com/matrixhub-ai/matrixhub/api/go/v1alpha1"
 	"github.com/matrixhub-ai/matrixhub/internal/domain/authz"
+	"github.com/matrixhub-ai/matrixhub/internal/domain/role"
 	"github.com/matrixhub-ai/matrixhub/internal/domain/user"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
 )
@@ -38,7 +39,7 @@ func (u *UserHandler) SetUserSysAdmin(ctx context.Context, request *userv1alpha1
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if allowed, err := u.authzService.VerifyPlatformPermission(ctx, authz.UserAuthorize); err != nil || !allowed {
+	if allowed, err := u.authzService.VerifyPlatformPermission(ctx, role.UserAuthorize); err != nil || !allowed {
 		return nil, status.Error(codes.PermissionDenied, "permission denied")
 	}
 
