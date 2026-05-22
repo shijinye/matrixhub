@@ -38,13 +38,6 @@ export const projectNameSchema = z
 
       return
     }
-
-    if (new Set(val).size < 2) {
-      ctx.addIssue({
-        code: 'custom',
-        message: i18n.t('projects.validation.nameDistinctChars'),
-      })
-    }
   })
 
 export const registryIdSchema = z
