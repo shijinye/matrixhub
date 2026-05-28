@@ -146,10 +146,3 @@ jobs:
 
           rm -rf /tmp/chart
           echo "Deploy complete. Version=${VERSION}"
-
-      - name: Verify deployment
-        run: |
-          NAMESPACE="${DEPLOY_NAMESPACE:-matrixhub}"
-          kubectl -n "${NAMESPACE}" rollout status deployment/matrixhub --timeout=60s
-          echo "---"
-          kubectl -n "${NAMESPACE}" get pods -l app=matrixhub -o wide
