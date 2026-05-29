@@ -104,11 +104,17 @@ func (s *AuthzService) getPermissions(ctx context.Context, identity auth.Identit
 }
 
 func (s *AuthzService) getUserPermissions(ctx context.Context, id *user.Identity, projectId int) ([]role.Permission, error) {
-	if projectId == 0 {
-		return s.authzRepo.GetUserPlatformPermissions(ctx, id.GetID())
+	platformPerms, err := s.authzRepo.GetUserPlatformPermissions(ctx, id.GetID())
+	if err != nil {
+		return nil, err
 	}
 
-	return s.authzRepo.GetUserProjectPermissions(ctx, id.GetID(), projectId)
+	projectPerms, err := s.authzRepo.GetUserProjectPermissions(ctx, id.GetID(), projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return append(platformPerms, projectPerms...), nil
 }
 
 // getRobotPermissions resolves permissions for a robot account.
