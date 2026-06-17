@@ -4,9 +4,11 @@ import {
   Text,
 } from '@mantine/core'
 import { ProjectType } from '@matrixhub/api-ts/v1alpha1/project.pb'
+import { ProjectRoleType } from '@matrixhub/api-ts/v1alpha1/role.pb'
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
+import { useProjectRole } from '@/features/auth/useProjectRole'
 import {
   DataTable,
   type DataTableProps,
@@ -19,6 +21,11 @@ import type { MRT_ColumnDef } from 'mantine-react-table'
 
 function isPublicProject(type?: ProjectType) {
   return type === ProjectType.PROJECT_TYPE_PUBLIC
+}
+
+function canDeleteProject(project: Project, projectRole?: ProjectRoleType) {
+  return !!project.name
+    && projectRole === ProjectRoleType.ROLE_TYPE_PROJECT_ADMIN
 }
 
 type ProjectCellProps = Parameters<NonNullable<MRT_ColumnDef<Project>['Cell']>>[0]
@@ -84,14 +91,22 @@ function ProjectActionsCell({
   table,
 }: DataTableRowActionsProps<Project>) {
   const { t } = useTranslation()
-  const onDelete = (
-    table.options.meta as { onDelete?: (project: Project) => void } | undefined
-  )?.onDelete
+  const {
+    onDelete,
+  } = (table.options.meta as {
+    onDelete?: (project: Project) => void
+  } | undefined) ?? {}
+  const projectRole = useProjectRole(row.original.name ?? '')
+  const disabled = !onDelete || !canDeleteProject(row.original, projectRole)
 
   return (
     <Anchor
       component="button"
       size="sm"
+      c={disabled ? 'dimmed' : undefined}
+      underline={disabled ? 'never' : 'hover'}
+      disabled={disabled}
+      style={disabled ? { cursor: 'not-allowed' } : undefined}
       onClick={() => onDelete?.(row.original)}
     >
       {t('projects.actions.delete')}
@@ -166,7 +181,9 @@ export function ProjectsTable({
       enableRowActions
       renderRowActions={ProjectActionsCell}
       tableOptions={{
-        meta: { onDelete },
+        meta: {
+          onDelete,
+        },
       }}
     />
   )
