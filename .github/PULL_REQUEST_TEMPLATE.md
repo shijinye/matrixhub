@@ -27,6 +27,11 @@ Fixes #
 
 #### Special notes for your reviewer:
 
+#### Checklist
+<!-- For behavior changes, check the items below. If an item does not apply, leave it unchecked and explain in the reviewer notes above. -->
+- [ ] UT/E2E added or updated
+- [ ] User-facing behavior changes are documented
+
 #### Does this PR introduce a user-facing change?
 <!--
 If no, just write "NONE" in the release-note block below.
