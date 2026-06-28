@@ -25,3 +25,5 @@ labels: kind/bug
 **Verification checklist**:
 - [ ] UT/E2E added or updated
 - [ ] Verify screenshot attached
+
+Before closing this issue, ensure all checklist items above are completed and checked off.

@@ -1,6 +1,7 @@
 ---
 name: Feature
 about: Suggest a new feature or enhancement for the MatrixHub project
+title: "[Feature] "
 labels: kind/feature
 
 ---
@@ -18,3 +19,5 @@ labels: kind/feature
 - [ ] Docs update
 
 The artifacts above should be described or linked in this checklist or the associated PR/issues.
+
+Before closing this issue, ensure all checklist items above are completed and checked off.

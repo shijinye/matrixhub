@@ -5,19 +5,32 @@ title: "[Backend] "
 labels: kind/feature
 
 ---
-<!-- Defaults to a subtask of a parent (tracking) issue. To use as a standalone/normal issue, overwrite the requirement section below with the actual details. -->
+<!-- Defaults to a subtask of a parent (tracking) issue. To use as a standalone/normal issue, overwrite the feature section below with the actual details. -->
 
-**What is the requirement and Why is this needed**:
+**What is the feature and Why is this needed**:
 
-The requirements are detailed in the parent issue.
+The feature is detailed in the parent issue.
+
+**Dev requirements**:
+
+- **Technical design**: for a simple change, describe the approach directly in the checklist; for a complex one, write a **technical design doc** (under `docs/design/`, or an external doc) and get maintainer review **before coding**; link it in the checklist.
+- **Review the QA test cases** for this feature and leave **at least one constructive comment** on the QA task.
+- Add **unit tests (UT)** for methods with complex or important logic, especially those under `internal/domain`.
+- Add **E2E tests** for this feature.
+- Document **API changes**: link the swagger contract (`api/openapiv2/v1alpha1/<service>.swagger.json`), then list each new/changed proto or HTTP API as its own sub-checkbox with a short note on what it does, and tick it once implemented so frontend and QA can see which APIs are ready; write **none** if not applicable.
 
 ---
 
 **Completion checklist**:
 
-- [ ] **Technical design (doc)**: <!-- link the design/approach; get maintainer review before coding -->
-- [ ] **UT** <!-- unit tests for new domain/jobserver logic; patch coverage gate must pass -->
-- [ ] **E2E** <!-- relevant e2e scenarios pass (smoke or targeted) -->
-- [ ] **API change**: <!-- list new/changed proto or HTTP APIs, or "none" -->
+- [ ] **Technical design**:
+- [ ] **Test cases reviewed and commented**
+- [ ] **UT**
+- [ ] **E2E**
+- [ ] **API change**: 
+  - Swagger: `api/openapiv2/v1alpha1/<service>.swagger.json`
+  - [ ] `<METHOD> /api/v1alpha1/...` / `rpc Xxx(...)` — what it does
 
 The artifacts above should be described or linked in this checklist or the associated PR.
+
+Before closing this issue, ensure all checklist items above are completed and checked off.
