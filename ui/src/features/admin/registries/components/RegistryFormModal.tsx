@@ -26,10 +26,12 @@ import {
   editRegistryFormSchema,
   getRegistryFormValues,
   REGISTRY_DESCRIPTION_MAX_LENGTH,
+  registryProviderLabelKeys,
   registryDescriptionSchema,
   registryNameSchema,
   registryUrlSchema,
   sanitizeRegistryName,
+  supportedRegistryTypes,
 } from '../registries.form'
 import {
   createRegistryMutationOptions,
@@ -77,12 +79,14 @@ export function RegistryFormModal({
     },
   })
 
-  const providerOptions = [
-    {
-      value: RegistryType.REGISTRY_TYPE_HUGGINGFACE,
-      label: t('routes.admin.registries.provider.huggingFace'),
-    },
-  ]
+  const providerOptions = supportedRegistryTypes.map((type) => {
+    const labelKey = registryProviderLabelKeys[type]
+
+    return {
+      value: type,
+      label: labelKey ? t(labelKey) : type,
+    }
+  })
   const isSubmitting = useStore(form.store, state => state.isSubmitting)
 
   const handleTestConnection = async () => {
